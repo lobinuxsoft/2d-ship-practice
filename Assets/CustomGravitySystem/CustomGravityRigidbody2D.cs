@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace CryingOnionTools.GravitySystem
@@ -34,5 +35,20 @@ namespace CryingOnionTools.GravitySystem
          
          body.AddForce(CustomGravity.GetGravity(body.position));
       }
-   }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            Handles.color = Color.yellow;
+            Handles.ArrowHandleCap(0, transform.position, Quaternion.LookRotation(-CustomGravity.GetUpAxis(transform.position), Vector3.up), 1f, EventType.Repaint);
+
+            if (body)
+            {
+                Handles.color = Color.blue;
+                Vector3 dir = Vector3.ClampMagnitude(body.velocity, 1);
+                Handles.ArrowHandleCap(0, body.position, Quaternion.LookRotation(dir, Vector3.up), dir.magnitude, EventType.Repaint);
+            }
+        }
+#endif
+    }
 }
